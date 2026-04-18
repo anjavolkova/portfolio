@@ -100,7 +100,7 @@ const Icon = {
 function Squiggle({ style }) {
   return (
     <img
-      src="assets/scribble.png"
+      src="assets/vector 10.svg"
       alt=""
       aria-hidden="true"
       style={{
@@ -108,7 +108,7 @@ function Squiggle({ style }) {
         width: 300,
         height: "auto",
         pointerEvents: "none",
-        opacity: 0.9,
+        opacity: 1,
         ...style
       }} />);
 
@@ -195,7 +195,7 @@ function Header({ onChat, active, menuOpen, setMenuOpen, dark, toggleDark }) {
 function Hero() {
   return (
     <section className="hero container" id="about" style={{ position: "relative" }}>
-      <Squiggle style={{ top: 60, left: -90, width: 306, height: 238, opacity: 0.7, zIndex: 0 }} />
+      <Squiggle style={{ top: 60, left: -90, width: 306, height: 238, opacity: 1, zIndex: 0 }} />
       <div className="hero-row">
         <div>
           <h1 className="serif">Anna Volkova — Designer based in Ljubljana</h1>
