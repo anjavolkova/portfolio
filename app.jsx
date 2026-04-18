@@ -85,7 +85,13 @@ const Icon = {
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" /></svg>,
 
   File: (p) =>
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" /><path d="M14 3v5h5" /></svg>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" /><path d="M14 3v5h5" /></svg>,
+
+  Sun: (p) =>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>,
+
+  Moon: (p) =>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
 
 };
 
@@ -143,7 +149,7 @@ function Hamburger({ open, onClick }) {
     </button>);
 }
 
-function MobileMenu({ open, onClose, onChat, onBack }) {
+function MobileMenu({ open, onClose, onChat, onBack, dark, toggleDark }) {
   return (
     <div className={`mobile-menu ${open ? "open" : ""}`}>
       {onBack ?
@@ -151,6 +157,10 @@ function MobileMenu({ open, onClose, onChat, onBack }) {
         <>
           <a href="#work" onClick={onClose}>Work</a>
           <a href="#about" onClick={onClose}>About</a>
+          <button onClick={() => { toggleDark && toggleDark(); onClose(); }} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {dark ? <Icon.Sun width="16" height="16" /> : <Icon.Moon width="16" height="16" />}
+            {dark ? "Light mode" : "Dark mode"}
+          </button>
         </>
       }
       <button className="btn-chat" onClick={() => {onClose();onChat && onChat();}}>
@@ -159,7 +169,7 @@ function MobileMenu({ open, onClose, onChat, onBack }) {
     </div>);
 }
 
-function Header({ onChat, active, menuOpen, setMenuOpen }) {
+function Header({ onChat, active, menuOpen, setMenuOpen, dark, toggleDark }) {
   return (
     <header className="header">
       <div className="brand">
@@ -170,6 +180,9 @@ function Header({ onChat, active, menuOpen, setMenuOpen }) {
       <nav className="nav">
         <a href="#work" className={active === "work" ? "active" : ""}>Work</a>
         <a href="#about" className={active === "about" ? "active" : ""}>About</a>
+        <button className="theme-toggle" onClick={toggleDark} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}>
+          {dark ? <Icon.Sun /> : <Icon.Moon />}
+        </button>
         <button className="btn-chat" onClick={onChat}>Let's chat</button>
       </nav>
       <Hamburger open={menuOpen} onClick={() => setMenuOpen(!menuOpen)} />
@@ -325,7 +338,7 @@ function Footer() {
 
 /* ---------------- Case study ---------------- */
 
-function CaseStudy({ project, open, onClose }) {
+function CaseStudy({ project, open, onClose, dark, toggleDark }) {
   const mainRef = useRef(null);
   const [activeSection, setActiveSection] = useState("overview");
   const [caseMenuOpen, setCaseMenuOpen] = useState(false);
@@ -377,6 +390,9 @@ function CaseStudy({ project, open, onClose }) {
         <nav className="nav">
           <a href="#" onClick={(e) => {e.preventDefault();onClose();}}>Work</a>
           <a href="#" onClick={(e) => {e.preventDefault();onClose();}}>About</a>
+          <button className="theme-toggle" onClick={toggleDark} aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}>
+            {dark ? <Icon.Sun /> : <Icon.Moon />}
+          </button>
           <button className="btn-chat" onClick={onClose}>Back</button>
         </nav>
         <Hamburger open={caseMenuOpen} onClick={() => setCaseMenuOpen(!caseMenuOpen)} />
@@ -590,6 +606,20 @@ function App() {
   const [tweaksOn, setTweaksOn] = useState(false);
   const [tweakValues, setTweakValuesRaw] = useState(TWEAK_DEFAULTS);
 
+  // dark mode — initialise from localStorage, fall back to system preference
+  const [dark, setDark] = useState(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved) return saved === "dark";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
+
+  const toggleDark = () => setDark((d) => !d);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+    localStorage.setItem("theme", dark ? "dark" : "light");
+  }, [dark]);
+
   const setTweakValues = (patch) => {
     const next = { ...tweakValues, ...patch };
     setTweakValuesRaw(next);
@@ -665,15 +695,15 @@ function App() {
   return (
     <>
       <div className="page">
-        <Header onChat={() => setChatOpen(true)} active={activeSec} menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
-        <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} onChat={() => setChatOpen(true)} />
+        <Header onChat={() => setChatOpen(true)} active={activeSec} menuOpen={menuOpen} setMenuOpen={setMenuOpen} dark={dark} toggleDark={toggleDark} />
+        <MobileMenu open={menuOpen} onClose={() => setMenuOpen(false)} onChat={() => setChatOpen(true)} dark={dark} toggleDark={toggleDark} />
         <Hero />
         <Projects onOpen={openCase} />
         <FunGrid />
         <CTA onChat={() => setChatOpen(true)} />
         <Footer />
       </div>
-      <CaseStudy project={openProject} open={!!openProject} onClose={() => setOpenProject(null)} />
+      <CaseStudy project={openProject} open={!!openProject} onClose={() => setOpenProject(null)} dark={dark} toggleDark={toggleDark} />
       <ChatModal open={chatOpen} onClose={() => setChatOpen(false)} />
       <Tweaks show={tweaksOn} values={tweakValues} setValues={setTweakValues} />
     </>);
