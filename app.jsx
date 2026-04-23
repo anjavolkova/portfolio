@@ -46,15 +46,15 @@ const FUN_THINGS = [
 
 
 const CV = [
-{ when: "Now", what: "Visual & social media design @osipova photography" },
-{ when: "2025", what: "Graduated MSc Data-Driven Design @Hogeschool Utrecht" },
-{ when: "Always", what: "Creating book content @libraryofanya" }];
-
-
-const CHIPS = [
-{ k: "Based in", v: "Ljubljana, SI" },
-{ k: "💿 On repeat", v: "Do It Underscores U" },
-{ k: "📚 Reading", v: "All Fours\nMiranda July · 18/60" }];
+{
+  when: "Now",
+  items: [
+    { role: "Product design", at: "@Kontron", href: "https://kontron.si" },
+    { role: "Visual & social media design", at: "@osipova photography", href: "#" },
+    { role: "Book reviews", at: "@libraryofanya", href: "#" },
+  ]
+},
+{ when: "2022", what: "Graduated MSc Data-Driven Design @Hogeschool Utrecht" }];
 
 
 const CASE_SECTIONS = [
@@ -95,25 +95,57 @@ const Icon = {
 
 };
 
-/* ---------------- decorative squiggle ---------------- */
-
-function Squiggle({ style }) {
-  return (
-    <img
-      src="assets/Vector 10.svg"
-      alt=""
-      aria-hidden="true"
-      style={{
-        position: "absolute",
-        width: 300,
-        height: "auto",
-        pointerEvents: "none",
-        opacity: 1,
-        ...style
-      }} />);
 
 
+/* ---------------- live data hooks ---------------- */
+
+function useClock() {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(id);
+  }, []);
+  return now;
 }
+
+function useWeather() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    fetch("https://wttr.in/Ljubljana?format=j1")
+      .then((r) => r.json())
+      .then((d) => {
+        const c = d.current_condition[0];
+        setData({ temp: c.temp_C, desc: c.weatherDesc[0].value });
+      })
+      .catch(() => {});
+  }, []);
+  return data;
+}
+
+function useLastFm() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    const load = () =>
+      fetch("https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=xowaltz&api_key=636a4e93cbcf470a847fe48ee1641a76&limit=1&format=json")
+        .then((r) => r.json())
+        .then((d) => {
+          const track = d.recenttracks?.track?.[0];
+          if (!track) return;
+          setData({
+            name: track.name,
+            artist: track.artist["#text"],
+            nowPlaying: !!track["@attr"]?.nowplaying,
+          });
+        })
+        .catch(() => {});
+    load();
+    const id = setInterval(load, 30000);
+    return () => clearInterval(id);
+  }, []);
+  return data;
+}
+
+const LAST_READ = { title: "All Fours", author: "Miranda July" };
 
 /* ---------------- placeholder media ---------------- */
 
@@ -173,9 +205,7 @@ function Header({ onChat, active, menuOpen, setMenuOpen, dark, toggleDark }) {
   return (
     <header className="header">
       <div className="brand">
-        <span>anna volkova</span>
-        <span className="rule" />
-        <span className="role">designer</span>
+        <span>Anna Volkova</span>
       </div>
       <nav className="nav">
         <a href="#work" className={active === "work" ? "active" : ""}>Work</a>
@@ -193,27 +223,78 @@ function Header({ onChat, active, menuOpen, setMenuOpen, dark, toggleDark }) {
 /* ---------------- Hero ---------------- */
 
 function Hero() {
+  const clock = useClock();
+  const weather = useWeather();
+  const track = useLastFm();
+  const book = LAST_READ;
+
+  const ljTime = clock.toLocaleTimeString("en-GB", {
+    timeZone: "Europe/Ljubljana",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
   return (
     <section className="hero container" id="about" style={{ position: "relative" }}>
-      <Squiggle style={{ top: 60, left: -90, width: 306, height: 238, opacity: 1, zIndex: 0 }} />
       <div className="hero-row">
         <div>
           <h1 className="serif">Anna Volkova — Designer based in Ljubljana</h1>
           <p className="lede">I design products, create visual content, code my way out of problems, and build things when inspiration strikes.</p>
           <div className="meta">
-            {CHIPS.map((c) =>
-            <div className="chip" key={c.k}>
-                <div className="k">{c.k}</div>
-                <div className="v">{c.v}</div>
+            <div className="chip">
+              <div className="k">📍</div>
+              <div className="v">
+                <div>Ljubljana, SI</div>
+                <div>{weather ? `${weather.temp}°C · ${weather.desc}` : "—"}</div>
+                <div>{ljTime}</div>
               </div>
-            )}
+            </div>
+            <div className="chip">
+              <div className="k">💿</div>
+              <div className="v">
+                {track ? (
+                  <>
+                    <div>{track.name}</div>
+                    <div>{track.artist}</div>
+                    <div>{track.nowPlaying ? "● now playing" : "recently"}</div>
+                  </>
+                ) : (
+                  <div>—</div>
+                )}
+              </div>
+            </div>
+            <div className="chip">
+              <div className="k">📚</div>
+              <div className="v">
+                {book ? (
+                  <>
+                    <div>{book.title}</div>
+                    {book.author && <div>{book.author}</div>}
+                    <div>last read</div>
+                  </>
+                ) : (
+                  <div>—</div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
         <div className="cv-list">
           {CV.map((r) =>
-          <div className="row" key={r.what}>
+          <div className="row" key={r.when}>
               <div className="when">{r.when}</div>
-              <div className="what">{r.what}</div>
+              <div className="what">
+                {r.items ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                    {r.items.map((item) =>
+                    <div key={item.at}>
+                        <a href={item.href} target="_blank" rel="noopener noreferrer">{item.at}</a>
+                        {" "}{item.role}
+                      </div>
+                    )}
+                  </div>
+                ) : r.what}
+              </div>
             </div>
           )}
         </div>
@@ -561,51 +642,12 @@ function ChatModal({ open, onClose }) {
 
 }
 
-/* ---------------- Tweaks (host-integrated) ---------------- */
-
-const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "accent": "lavender",
-  "chatOpenByDefault": false
-} /*EDITMODE-END*/;
-
-const ACCENTS = {
-  lavender: { swatch: "oklch(0.55 0.09 310)", value: "oklch(0.55 0.09 310)" },
-  teal: { swatch: "oklch(0.55 0.09 190)", value: "oklch(0.55 0.09 190)" },
-  peach: { swatch: "oklch(0.70 0.12 50)", value: "oklch(0.65 0.11 45)" },
-  forest: { swatch: "oklch(0.50 0.09 150)", value: "oklch(0.50 0.09 150)" }
-};
-
-function Tweaks({ show, values, setValues }) {
-  return (
-    <div className={`tweaks ${show ? "show" : ""}`}>
-      <div className="t-title">Tweaks</div>
-      <div className="t-row">
-        <span>Accent</span>
-        <div className="swatches">
-          {Object.entries(ACCENTS).map(([k, v]) =>
-          <div
-            key={k}
-            className={`swatch ${values.accent === k ? "on" : ""}`}
-            style={{ background: v.swatch }}
-            title={k}
-            onClick={() => setValues({ accent: k })} />
-
-          )}
-        </div>
-      </div>
-    </div>);
-
-}
-
 /* ---------------- App ---------------- */
 
 function App() {
   const [openProject, setOpenProject] = useState(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [tweaksOn, setTweaksOn] = useState(false);
-  const [tweakValues, setTweakValuesRaw] = useState(TWEAK_DEFAULTS);
-
   // dark mode — initialise from localStorage, fall back to system preference
   const [dark, setDark] = useState(() => {
     const saved = localStorage.getItem("theme");
@@ -619,32 +661,6 @@ function App() {
     document.documentElement.classList.toggle("dark", dark);
     localStorage.setItem("theme", dark ? "dark" : "light");
   }, [dark]);
-
-  const setTweakValues = (patch) => {
-    const next = { ...tweakValues, ...patch };
-    setTweakValuesRaw(next);
-    try {
-      window.parent.postMessage({ type: "__edit_mode_set_keys", edits: patch }, "*");
-    } catch {}
-  };
-
-  // apply accent to CSS var
-  useEffect(() => {
-    const a = ACCENTS[tweakValues.accent] || ACCENTS.lavender;
-    document.documentElement.style.setProperty("--accent", a.value);
-  }, [tweakValues.accent]);
-
-  // edit mode protocol
-  useEffect(() => {
-    const handler = (e) => {
-      const d = e.data || {};
-      if (d.type === "__activate_edit_mode") setTweaksOn(true);
-      if (d.type === "__deactivate_edit_mode") setTweaksOn(false);
-    };
-    window.addEventListener("message", handler);
-    try {window.parent.postMessage({ type: "__edit_mode_available" }, "*");} catch {}
-    return () => window.removeEventListener("message", handler);
-  }, []);
 
   // scroll spy for header nav
   const [activeSec, setActiveSec] = useState("about");
@@ -705,7 +721,6 @@ function App() {
       </div>
       <CaseStudy project={openProject} open={!!openProject} onClose={() => setOpenProject(null)} dark={dark} toggleDark={toggleDark} />
       <ChatModal open={chatOpen} onClose={() => setChatOpen(false)} />
-      <Tweaks show={tweaksOn} values={tweakValues} setValues={setTweakValues} />
     </>);
 
 }

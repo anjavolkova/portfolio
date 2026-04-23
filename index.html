@@ -8,42 +8,44 @@
 <title>anna volkova — designer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300&family=Inter:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300&family=Inter:wght@200..900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
+  @import url('//fonts.googleapis.com/earlyaccess/jejumyeongjo.css');
+
   :root {
-    --ink: rgb(21,2,34);
-    --muted: rgb(107,93,117);
-    --muted-2: rgb(159,126,182);
-    --bg: rgb(253,252,253);
+    --ink: rgba(21, 2, 34, 1);
+    --muted: rgba(107, 93, 117, 1);
+    --muted-2: rgba(107, 93, 117, 1);
+    --bg: rgba(253, 252, 253, 1);
     --card: rgb(255,255,255);
-    --line: rgb(228,227,230);
-    --line-soft: rgb(233,233,233);
-    --dark: rgb(21,2,34);
-    --accent: hsla(275, 11%, 41%, 1);
+    --line: rgba(228, 227, 230, 1);
+    --line-soft: rgba(228, 227, 230, 0.9);
+    --dark: rgba(21, 2, 34, 1);
+    --accent: rgba(107, 93, 117, 1);
     --header-bg: rgba(253,252,253,0.65);
     --frosted-bg: rgba(253,252,253,0.96);
   }
   html.dark {
     --ink: rgb(220,212,228);
-    --muted: rgb(130,112,148);
-    --muted-2: rgb(155,132,175);
-    --bg: rgb(21,2,34);
+    --muted: rgba(107, 93, 117, 1);
+    --muted-2: rgba(107, 93, 117, 1);
+    --bg: rgba(21, 2, 34, 1);
     --card: rgb(32,14,46);
     --line: rgba(130,112,148,0.25);
     --line-soft: rgba(130,112,148,0.14);
-    --dark: rgb(130,112,148);
-    --accent: rgb(148,122,170);
+    --dark: rgba(107, 93, 117, 1);
+    --accent: rgba(107, 93, 117, 1);
     --header-bg: rgba(21,2,34,0.8);
     --frosted-bg: rgba(21,2,34,0.97);
   }
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;}
   html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: "Inter", system-ui, sans-serif; transition: background-color .3s, color .3s; }
   body { overflow-x: hidden; }
   a { color: inherit; text-decoration: none; }
   button { font-family: inherit; cursor: pointer; border: 0; background: none; padding: 0; color: inherit; }
 
   .mono { font-family: "Space Mono", ui-monospace, monospace; letter-spacing: -0.06em; }
-  .serif { font-family: "Fraunces", Georgia, serif; font-weight: 300; letter-spacing: -0.05em; }
+  .serif { font-family: "JejuMyeongjo", Georgia, serif; font-weight: 300; letter-spacing: -0.05em; }
   .italic { font-style: italic; }
 
   /* layout */
@@ -60,7 +62,7 @@
   }
   .header .brand {
     display: flex; align-items: center; gap: 12px;
-    font-family: "Fraunces", serif; font-weight: 300; font-size: 28px; letter-spacing: -0.05em;
+    font-family: "JejuMyeongjo", serif; font-weight: 300; font-size: 32px; letter-spacing: -0.05em;
     color: var(--ink);
   }
   .header .brand .rule { width: 16px; height: 1px; background: var(--muted); }
@@ -96,17 +98,29 @@
   .hero {
     padding: 160px 0 100px;
   }
-  .hero-row { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 80px; align-items: start; }
+  .hero-row { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 80px; align-items: start; }
   .hero h1 {
-    font-family: "Fraunces", serif; font-weight: 400;
-    font-size: 30px; line-height: 1.05; letter-spacing: -0.05em;
+    font-family: "JejuMyeongjo", serif; 
+    font-size: 36px;
+    font-weight: 400;
+    word-wrap: break-word; 
+    letter-spacing: -0.05em;
     color: var(--ink);
-    margin: 0 0 12px;
+    margin: 0px;
+    -webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
   }
   .hero p.lede {
-    font-family: "Fraunces", serif; font-weight: 300;
-    font-size: 30px; line-height: 1.05; letter-spacing: -0.05em;
+    font-family: "JejuMyeongjo", serif; 
+    font-size: 36px;
+    font-family: JejuMyeongjo;
+    font-weight: 400;
+    line-height: 1;
+    word-wrap: break-word;
+    letter-spacing: -0.05em;
     color: var(--muted); margin: 0;
+    -webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
   }
   .hero .cv-list { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
   .hero .cv-list .row { display: grid; grid-template-columns: 92px 1fr; gap: 16px; align-items: baseline; padding: 6px 0; border-bottom: 1px dashed rgba(107,93,117,.25); }
@@ -116,12 +130,8 @@
 
   .hero .meta { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
   .chip {
-    border: 1px solid var(--line);
-    background: var(--card);
-    border-radius: 14px;
-    padding: 10px 14px;
     min-width: 140px;
-    display: flex; flex-direction: column; gap: 4px;
+    display: flex; flex-direction: row; gap: 16px;
   }
   .chip .k { font-family: "Space Mono", monospace; font-size: 11px; letter-spacing: -0.04em; color: var(--muted); text-transform: uppercase; }
   .chip .v { font-family: "Inter", sans-serif; font-size: 14px; color: var(--ink); line-height: 1.3; white-space: pre-line; }
@@ -170,7 +180,7 @@
   .project-body .tag { font-family: "Space Mono", monospace; font-size: 14px; color: var(--muted); letter-spacing: -0.06em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
   .project-body .tag .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
   .project-body h3 {
-    font-family: "Fraunces", serif; font-weight: 300;
+    font-family: "JejuMyeongjo", serif; font-weight: 300;
     font-size: 40px; line-height: 1.02; letter-spacing: -0.04em;
     color: var(--ink); margin: 0 0 16px;
   }
@@ -208,7 +218,7 @@
   .fun-card:hover .thumb { transform: translateY(-4px); box-shadow: 0 12px 24px -12px rgba(21,2,34,.25); }
   .fun-card h4 {
     margin: 14px 0 4px;
-    font-family: "Fraunces", serif; font-weight: 400;
+    font-family: "JejuMyeongjo", serif; font-weight: 400;
     font-size: 19px; letter-spacing: -0.04em; color: var(--ink);
     line-height: 1.15;
   }
@@ -223,7 +233,7 @@
     padding: 120px 0 60px;
   }
   .cta h2 {
-    font-family: "Fraunces", serif; font-weight: 400;
+    font-family: "JejuMyeongjo", serif; font-weight: 400;
     font-size: 32px; line-height: 1.05; letter-spacing: -0.05em; margin: 0 0 16px;
   }
   .cta .sub { color: var(--muted); font-family: "Space Mono", monospace; letter-spacing: -0.06em; font-size: 16px; margin-bottom: 28px; }
@@ -297,7 +307,7 @@
   .case-main { padding: 48px 96px 160px; max-width: 960px; }
   .case-tag { font-family: "Space Mono", monospace; font-size: 15px; color: var(--muted); letter-spacing: -0.06em; }
   .case-title {
-    font-family: "Fraunces", serif; font-weight: 300;
+    font-family: "JejuMyeongjo", serif; font-weight: 300;
     font-size: 64px; line-height: 1.08; letter-spacing: -0.05em;
     margin: 8px 0 32px; color: var(--ink);
   }
@@ -318,7 +328,7 @@
   .case-section { margin-bottom: 72px; scroll-margin-top: 96px; }
   .case-section .kicker { font-family: "Space Mono", monospace; font-size: 15px; color: var(--muted); letter-spacing: -0.06em; margin-bottom: 16px; }
   .case-section h2 {
-    font-family: "Fraunces", serif; font-weight: 300;
+    font-family: "JejuMyeongjo", serif; font-weight: 300;
     font-size: 46px; line-height: 1; letter-spacing: -0.04em;
     margin: 0 0 28px; color: var(--ink);
   }
@@ -332,7 +342,7 @@
     padding: 20px;
     background: var(--card);
   }
-  .stat .n { font-family: "Fraunces", serif; font-weight: 300; font-size: 54px; letter-spacing: -0.05em; line-height: 1; color: var(--ink); }
+  .stat .n { font-family: "JejuMyeongjo", serif; font-weight: 300; font-size: 54px; letter-spacing: -0.05em; line-height: 1; color: var(--ink); }
   .stat .l { font-family: "Space Mono", monospace; font-size: 13px; color: var(--muted); letter-spacing: -0.04em; margin-top: 10px; }
 
   .process-steps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 24px; }
@@ -345,7 +355,7 @@
   }
   .step:hover { border-color: var(--accent); transform: translateY(-2px); }
   .step .num { font-family: "Space Mono", monospace; font-size: 12px; color: var(--accent); letter-spacing: -0.04em; margin-bottom: 8px; }
-  .step h4 { margin: 0 0 6px; font-family: "Fraunces", serif; font-weight: 400; font-size: 22px; letter-spacing: -0.04em; color: var(--ink); }
+  .step h4 { margin: 0 0 6px; font-family: "JejuMyeongjo", serif; font-weight: 400; font-size: 22px; letter-spacing: -0.04em; color: var(--ink); }
   .step p { font-size: 15px; color: var(--muted); margin: 0; }
 
   /* chat modal */
@@ -369,7 +379,7 @@
     transition: opacity .25s, transform .25s cubic-bezier(.2,.8,.2,1);
   }
   .modal.open { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: auto; }
-  .modal h3 { font-family: "Fraunces", serif; font-weight: 300; font-size: 36px; letter-spacing: -0.05em; margin: 0 0 4px; line-height: 1; }
+  .modal h3 { font-family: "JejuMyeongjo", serif; font-weight: 300; font-size: 36px; letter-spacing: -0.05em; margin: 0 0 4px; line-height: 1; }
   .modal .sub { font-family: "Space Mono", monospace; font-size: 14px; color: var(--muted); letter-spacing: -0.06em; margin-bottom: 20px; }
   .modal .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
   .modal label { font-family: "Space Mono", monospace; font-size: 12px; color: var(--muted); letter-spacing: -0.04em; text-transform: uppercase; }
